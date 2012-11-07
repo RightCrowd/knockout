@@ -55,7 +55,6 @@ ko.utils = new (function () {
                 knownEventTypesByEventName[knownEventsForType[i]] = eventType;
         }
     }
-    var eventsThatMustBeRegisteredUsingAttachEvent = { 'propertychange': true }; // Workaround for an IE9 issue - https://github.com/SteveSanderson/knockout/issues/406
 
     // Detect IE versions for bug workarounds (uses IE conditionals, not UA string, for robustness)
     // Note that, since IE 10 does not support conditional comments, the following logic only detects IE < 10.
@@ -74,6 +73,12 @@ ko.utils = new (function () {
     var isIe6 = ieVersion === 6,
         isIe7 = ieVersion === 7;
 
+	var eventsThatMustBeRegisteredUsingAttachEvent = {};
+    
+    if (ieVersion == 9) {
+        eventsThatMustBeRegisteredUsingAttachEvent = { 'propertychange': true }; // Workaround for an IE9 issue - https://github.com/SteveSanderson/knockout/issues/406
+    }
+		
     function isClickOnCheckableElement(element, eventType) {
         if ((ko.utils.tagNameLower(element) !== "input") || !element.type) return false;
         if (eventType.toLowerCase() != "click") return false;
